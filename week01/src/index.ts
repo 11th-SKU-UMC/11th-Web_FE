@@ -10,8 +10,8 @@ interface StudyMember {
 type StudyMemberType = StudyMember;
 
 const members: StudyMember[] = [
-  { id: 1, name: "광수", role: "leader", githubId: "gwangsoo" },
-  { id: 2, name: "지수", role: "member" },
+  { id: 1, name: "동현", role: "leader", githubId: "donghyun" },
+  { id: 2, name: "동현17호", role: "member" },
 ];
 
 function getMemberInfo(id: number): string {
