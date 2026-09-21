@@ -30,12 +30,32 @@ export function RatingPanel({ movieId }: RatingPanelProps) {
   const [saved] = useState(() => loadRating(movieId));
   const [rating, setRating] = useState(saved.rating);
   const [review, setReview] = useState(saved.review);
+  const [isSaved, setIsSaved] = useState(saved.rating > 0 || saved.review !== "");
 
   function handleSave() {
     localStorage.setItem(
       storageKey(movieId),
       JSON.stringify({ rating, review }),
     );
+    setIsSaved(true);
+  }
+
+  function handleReset() {
+    localStorage.removeItem(storageKey(movieId));
+    setRating(0);
+    setReview("");
+    setIsSaved(false);
+  }
+
+  // 저장한 뒤 값을 고치면 다시 저장할 수 있게 되돌린다.
+  function handleChangeRating(score: number) {
+    setRating(score);
+    setIsSaved(false);
+  }
+
+  function handleChangeReview(nextReview: string) {
+    setReview(nextReview);
+    setIsSaved(false);
   }
 
   return (
@@ -51,7 +71,7 @@ export function RatingPanel({ movieId }: RatingPanelProps) {
           <button
             key={score}
             type="button"
-            onClick={() => setRating(score)}
+            onClick={() => handleChangeRating(score)}
             aria-label={`${score}점`}
             aria-pressed={score <= rating}
             className="flex size-[38px] items-center justify-center rounded-lg border border-border bg-surface"
@@ -66,7 +86,7 @@ export function RatingPanel({ movieId }: RatingPanelProps) {
 
       <textarea
         value={review}
-        onChange={(event) => setReview(event.target.value)}
+        onChange={(event) => handleChangeReview(event.target.value)}
         placeholder="영화를 보고 느낀 점을 남겨보세요."
         aria-label="후기"
         className="h-[102px] resize-none rounded-lg border border-border bg-surface px-3 pt-4 pb-[18px] text-[13px] leading-[19.5px] text-primary outline-none placeholder:text-tertiary"
@@ -74,10 +94,12 @@ export function RatingPanel({ movieId }: RatingPanelProps) {
 
       <button
         type="button"
-        onClick={handleSave}
-        className="flex h-[42px] w-full items-center justify-center rounded-lg border border-surface bg-primary px-4 text-center text-sm font-bold text-surface"
+        onClick={isSaved ? handleReset : handleSave}
+        className={`flex h-[42px] w-full items-center justify-center rounded-lg border border-surface px-4 text-center text-sm font-bold text-surface ${
+          isSaved ? "bg-primary" : "bg-action"
+        }`}
       >
-        평점 저장
+        {isSaved ? "초기화" : "평점 저장"}
       </button>
     </aside>
   );
