@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import type { Movie } from "../types/movie";
 import { Icon } from "./Icon";
 
@@ -10,11 +11,13 @@ export function MovieCard({ movie, onToggleBookmark }: MovieCardProps) {
   return (
     <article className="flex flex-col gap-1">
       <div className="relative aspect-[2/3] overflow-hidden rounded-[10px] bg-page">
-        <img
-          src={movie.posterPath}
-          alt={`${movie.title} 포스터`}
-          className="size-full object-cover"
-        />
+        <Link to={`/movie/${movie.id}`} className="block size-full">
+          <img
+            src={movie.posterPath}
+            alt={`${movie.title} 포스터`}
+            className="size-full object-cover"
+          />
+        </Link>
 
         <button
           type="button"
@@ -34,9 +37,12 @@ export function MovieCard({ movie, onToggleBookmark }: MovieCardProps) {
         </button>
       </div>
 
-      <p className="truncate pt-[5px] text-sm font-bold text-primary">
+      <Link
+        to={`/movie/${movie.id}`}
+        className="truncate pt-[5px] text-sm font-bold text-primary"
+      >
         {movie.title}
-      </p>
+      </Link>
 
       <p className="text-xs text-tertiary">{movie.releaseDate}</p>
     </article>

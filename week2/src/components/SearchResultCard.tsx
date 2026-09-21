@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import type { Movie } from "../types/movie";
 import { Icon } from "./Icon";
 
@@ -30,13 +31,13 @@ export function SearchResultCard({ movie }: SearchResultCardProps) {
           {movie.overview}
         </p>
 
-        <button
-          type="button"
-          className="flex items-center gap-1 text-xs font-bold text-action"
+        <Link
+          to={`/movie/${movie.id}`}
+          className="flex w-fit items-center gap-1 text-xs font-bold text-action"
         >
           상세 보기
           <Icon name="arrow-right" className="size-4" />
-        </button>
+        </Link>
       </div>
     </article>
   );

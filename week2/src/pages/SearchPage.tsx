@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { Icon } from "../components/Icon";
 import { SearchResultCard } from "../components/SearchResultCard";
-import { movies } from "../data/movies";
+import { useMovies } from "../hooks/useMovies";
 
 export default function SearchPage() {
+  const { movies } = useMovies();
   const [query, setQuery] = useState("");
   const [searchedQuery, setSearchedQuery] = useState("");
   const [hasSearched, setHasSearched] = useState(false);
