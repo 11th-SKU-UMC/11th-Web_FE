@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { Icon } from "../components/Icon";
 
 export default function LoginPage() {
@@ -73,9 +74,9 @@ export default function LoginPage() {
         <div className="flex items-end justify-center pt-[5px]">
           <span className="text-[13px] text-secondary">처음이신가요?&nbsp;</span>
 
-          <button type="button" className="text-xs font-bold text-action">
+          <Link to="/signup" className="text-xs font-bold text-action">
             회원가입
-          </button>
+          </Link>
         </div>
       </form>
     </main>
