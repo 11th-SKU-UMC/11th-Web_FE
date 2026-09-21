@@ -1,13 +1,10 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { Icon } from "../components/Icon";
 import { MovieGrid } from "../components/MovieGrid";
 import { Pagination } from "../components/Pagination";
+import { profile } from "../data/profile";
 import { useMovies } from "../hooks/useMovies";
-
-const PROFILE = {
-  nickname: "나룬",
-  email: "test@test.com",
-};
 
 export default function MyPage() {
   const { movies } = useMovies();
@@ -22,12 +19,12 @@ export default function MyPage() {
           내 정보
         </h1>
 
-        <button
-          type="button"
+        <Link
+          to="/mypage/edit"
           className="flex h-[42px] items-center justify-center rounded-lg border border-surface bg-action px-4 text-center text-sm font-bold text-surface"
         >
           정보 수정
-        </button>
+        </Link>
       </div>
 
       <section className="flex flex-col gap-4 border-y border-border py-3">
@@ -42,14 +39,14 @@ export default function MyPage() {
             <div className="flex min-w-0 flex-1 flex-col gap-1.5">
               <p className="text-[11px] text-tertiary">닉네임</p>
               <strong className="text-sm font-bold text-primary">
-                {PROFILE.nickname}
+                {profile.nickname}
               </strong>
             </div>
 
             <div className="flex min-w-0 flex-1 flex-col gap-1.5">
               <p className="text-[11px] text-tertiary">이메일</p>
               <strong className="text-sm font-bold text-primary">
-                {PROFILE.email}
+                {profile.email}
               </strong>
             </div>
           </div>

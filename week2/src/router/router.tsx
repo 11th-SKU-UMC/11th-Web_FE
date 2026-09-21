@@ -4,6 +4,7 @@ import LoginPage from "../pages/LoginPage";
 import MovieDetailPage from "../pages/MovieDetailPage";
 import MoviePage from "../pages/MoviePage";
 import MyPage from "../pages/MyPage";
+import ProfileEditPage from "../pages/ProfileEditPage";
 import SearchPage from "../pages/SearchPage";
 import SignupPage from "../pages/SignupPage";
 
@@ -27,6 +28,10 @@ export const router = createBrowserRouter([
       {
         path: "mypage",
         element: <MyPage />,
+      },
+      {
+        path: "mypage/edit",
+        element: <ProfileEditPage />,
       },
       {
         path: "login",
