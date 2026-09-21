@@ -1,6 +1,9 @@
+import { useState } from "react";
 import { MovieCard } from "./components/MovieCard";
 
 export default function App() {
+  const [count, setCount] = useState(0);
+
   return (
     <div className="min-h-screen bg-gray-100 pt-20">
       <div className="mx-auto max-w-3xl rounded-xl bg-white p-8 shadow-xl">
@@ -15,12 +18,12 @@ export default function App() {
           <MovieCard
             title="오디세이"
             releaseDate="2026.08.05"
-            isBookmarked={true}
+            isBookmarked={false}
           />
           <MovieCard
             title="어벤져스: 엔드게임"
             releaseDate="2026.09.23"
-            isBookmarked={true}
+            isBookmarked={false}
           />
         </div>
       </div>
