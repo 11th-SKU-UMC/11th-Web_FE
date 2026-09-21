@@ -5,9 +5,12 @@ import Header from "./Header";
 export default function RootLayout() {
   return (
     <MovieProvider>
-      <div className="min-h-screen bg-page">
+      <div className="flex min-h-screen flex-col bg-page">
         <Header />
-        <Outlet />
+
+        <div className="flex flex-1 flex-col">
+          <Outlet />
+        </div>
       </div>
     </MovieProvider>
   );
