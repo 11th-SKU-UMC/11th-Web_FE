@@ -4,7 +4,8 @@ import { Icon } from "./Icon";
 
 interface MovieCardProps {
   movie: Movie;
-  onToggleBookmark: () => void;
+  /** 넘기지 않으면 즐겨찾기 버튼을 보여주지 않는다. */
+  onToggleBookmark?: () => void;
 }
 
 export function MovieCard({ movie, onToggleBookmark }: MovieCardProps) {
@@ -19,22 +20,24 @@ export function MovieCard({ movie, onToggleBookmark }: MovieCardProps) {
           />
         </Link>
 
-        <button
-          type="button"
-          onClick={onToggleBookmark}
-          aria-pressed={movie.isBookmarked}
-          aria-label={`${movie.title} 즐겨찾기`}
-          className={`absolute top-2.5 right-2.5 flex size-[34px] items-center justify-center rounded-lg border ${
-            movie.isBookmarked
-              ? "border-action bg-action"
-              : "border-surface bg-primary"
-          }`}
-        >
-          <Icon
-            name={movie.isBookmarked ? "bookmark" : "bookmark-outline"}
-            className="size-6 text-surface"
-          />
-        </button>
+        {onToggleBookmark && (
+          <button
+            type="button"
+            onClick={onToggleBookmark}
+            aria-pressed={movie.isBookmarked}
+            aria-label={`${movie.title} 즐겨찾기`}
+            className={`absolute top-2.5 right-2.5 flex size-[34px] items-center justify-center rounded-lg border ${
+              movie.isBookmarked
+                ? "border-action bg-action"
+                : "border-surface bg-primary"
+            }`}
+          >
+            <Icon
+              name={movie.isBookmarked ? "bookmark" : "bookmark-outline"}
+              className="size-6 text-surface"
+            />
+          </button>
+        )}
       </div>
 
       <Link

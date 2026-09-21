@@ -3,7 +3,8 @@ import { MovieCard } from "./MovieCard";
 
 interface MovieGridProps {
   movies: Movie[];
-  onToggleBookmark: (movieId: number) => void;
+  /** 넘기지 않으면 카드에 즐겨찾기 버튼을 보여주지 않는다. */
+  onToggleBookmark?: (movieId: number) => void;
 }
 
 export function MovieGrid({ movies, onToggleBookmark }: MovieGridProps) {
@@ -13,7 +14,9 @@ export function MovieGrid({ movies, onToggleBookmark }: MovieGridProps) {
         <MovieCard
           key={movie.id}
           movie={movie}
-          onToggleBookmark={() => onToggleBookmark(movie.id)}
+          onToggleBookmark={
+            onToggleBookmark ? () => onToggleBookmark(movie.id) : undefined
+          }
         />
       ))}
     </div>
