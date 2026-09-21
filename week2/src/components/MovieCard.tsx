@@ -1,4 +1,5 @@
 import type { Movie } from "../types/movie";
+import { Icon } from "./Icon";
 
 interface MovieCardProps {
   movie: Movie;
@@ -7,17 +8,37 @@ interface MovieCardProps {
 
 export function MovieCard({ movie, onToggleBookmark }: MovieCardProps) {
   return (
-    <div className="flex-1 rounded-lg bg-gray-100 p-5">
-      <div className="text-lg font-semibold">{movie.title}</div>
-      <div className="mt-2 text-sm text-gray-500">{movie.releaseDate}</div>
+    <article className="flex flex-col gap-1">
+      <div className="relative aspect-[2/3] overflow-hidden rounded-[10px] bg-page">
+        <img
+          src={movie.posterPath}
+          alt={`${movie.title} 포스터`}
+          className="size-full object-cover"
+        />
 
-      <button
-        className="mt-4 text-sm font-medium"
-        aria-pressed={movie.isBookmarked}
-        onClick={onToggleBookmark}
-      >
-        {movie.isBookmarked ? "★ 북마크 삭제" : "☆ 북마크 추가"}
-      </button>
-    </div>
+        <button
+          type="button"
+          onClick={onToggleBookmark}
+          aria-pressed={movie.isBookmarked}
+          aria-label={`${movie.title} 즐겨찾기`}
+          className={`absolute top-2.5 right-2.5 flex size-[34px] items-center justify-center rounded-lg border ${
+            movie.isBookmarked
+              ? "border-action bg-action"
+              : "border-surface bg-primary"
+          }`}
+        >
+          <Icon
+            name={movie.isBookmarked ? "bookmark" : "bookmark-outline"}
+            className="size-6 text-surface"
+          />
+        </button>
+      </div>
+
+      <p className="truncate pt-[5px] text-sm font-bold text-primary">
+        {movie.title}
+      </p>
+
+      <p className="text-xs text-tertiary">{movie.releaseDate}</p>
+    </article>
   );
 }
