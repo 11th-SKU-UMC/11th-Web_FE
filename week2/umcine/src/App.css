@@ -1,0 +1,322 @@
+/* =========================
+   Header
+========================= */
+
+.header {
+  height: 64px;
+  padding: 0 80px;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  font-size: 18px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.logo img {
+  width: 24px;
+  height: 24px;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+
+  font-size: 14px;
+}
+
+.nav a {
+  position: relative;
+  padding: 22px 0 20px;
+
+  color: #111111;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.nav a.active {
+  font-weight: 600;
+}
+
+.nav a.active::after {
+  content: "";
+
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 16px;
+
+  height: 2px;
+  background-color: #111111;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.search-button {
+  width: 36px;
+  height: 36px;
+  padding: 8px;
+
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.search-button img {
+  width: 100%;
+  height: 100%;
+}
+
+.login-button {
+  height: 36px;
+  padding: 0 16px;
+
+  color: #ffffff;
+  background-color: #2563eb;
+
+  border: none;
+  border-radius: 6px;
+
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+
+/* =========================
+   Main
+========================= */
+
+.main-content {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 32px 40px 60px;
+}
+
+.page-title {
+  margin: 0 0 20px;
+
+  font-size: 22px;
+  font-weight: 700;
+}
+
+
+/* =========================
+   Movie Grid
+========================= */
+
+.movie-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+
+  gap: 24px 16px;
+}
+
+
+/* =========================
+   Movie Card
+========================= */
+
+.movie-card {
+  min-width: 0;
+}
+
+.poster-wrapper {
+  position: relative;
+
+  width: 100%;
+  height: 210px;
+}
+
+.movie-poster {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+
+/* =========================
+   Bookmark
+========================= */
+
+.bookmark-button {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 26px;
+  height: 26px;
+  padding: 5px;
+
+  background-color: rgba(20, 20, 20, 0.75);
+
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: 4px;
+
+  cursor: pointer;
+}
+
+.bookmark-button.bookmarked {
+  background-color: #2563eb;
+  border-color: #2563eb;
+}
+
+.bookmark-icon {
+  display: block;
+
+  width: 16px;
+  height: 16px;
+
+  filter: brightness(0) invert(1);
+}
+
+
+/* =========================
+   Movie Information
+========================= */
+
+.movie-title {
+  margin: 6px 0 2px;
+
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.movie-release-date {
+  margin: 0;
+
+  color: #8a8a8a;
+  font-size: 10px;
+}
+
+
+/* =========================
+   Pagination
+========================= */
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 8px;
+  margin-top: 28px;
+}
+
+.page-arrow,
+.page-number {
+  width: 28px;
+  height: 28px;
+
+  border: none;
+  border-radius: 5px;
+  background-color: transparent;
+
+  cursor: pointer;
+}
+
+.page-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.page-arrow img {
+  width: 14px;
+  height: 14px;
+}
+
+.page-number.active {
+  color: #ffffff;
+  background-color: #111827;
+}
+
+
+/* =========================
+   Responsive
+   선택 미션 1
+========================= */
+
+/* 1024px 이하 → 3열 */
+@media (max-width: 1024px) {
+  .movie-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .header {
+    padding: 0 30px;
+  }
+
+  .header-left {
+    gap: 24px;
+  }
+
+  .nav {
+    gap: 18px;
+  }
+}
+
+
+/* 768px 이하 → 2열 */
+@media (max-width: 768px) {
+  .movie-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .header {
+    padding: 0 16px;
+  }
+
+  .header-left {
+    gap: 16px;
+  }
+
+  .nav {
+    gap: 12px;
+  }
+
+  .header-right {
+    gap: 6px;
+  }
+}
+
+
+/* 480px 이하 → 1열 */
+@media (max-width: 480px) {
+  .movie-grid {
+    grid-template-columns: 1fr;
+  }
+}
