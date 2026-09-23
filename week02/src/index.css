@@ -1,0 +1,31 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans:
+    "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont,
+    system-ui, sans-serif;
+
+  --color-ink: #17191e;
+  --color-gray-600: #606774;
+  --color-gray-400: #969da8;
+  --color-gray-200: #e3e6eb;
+  --color-surface: #f6f7f9;
+  --color-primary: #2563eb;
+  --color-primary-soft: #d9e5ff;
+  --color-danger: #d92d20;
+}
+
+body {
+  background: var(--color-surface);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+}
+
+/* 검정 단색 SVG 아이콘을 currentColor 로 칠하기 위한 마스크 */
+.icon {
+  display: inline-block;
+  flex: none;
+  background-color: currentColor;
+  mask: var(--icon) center / contain no-repeat;
+  -webkit-mask: var(--icon) center / contain no-repeat;
+}
