@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "ES2022",
     "rootDir": "./src",
-    "outDir": "../week01/dist",
+    "outDir": "./dist",
     "strict": true
   },
   "include": ["src/**/*.ts"]
