@@ -15,7 +15,6 @@ body {
   padding-bottom: 60px;
 }
 
-/* 헤더 스타일 */
 .header {
   height: 64px;
   display: flex;
@@ -69,27 +68,26 @@ body {
   cursor: pointer;
 }
 
-/* 본문 스타일 */
 .content {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 40px 20px;
+  padding: 40px 24px;
 }
 
 .section-title {
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 700;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
+  color: #0f172a;
 }
 
-/* 영화 그리드 (데스크톱 5열) */
 .movie-grid {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
   gap: 20px;
 }
 
-/* 미디어 쿼리 (반응형) */
+/* 반응형 미디어 쿼리 */
 @media (max-width: 1024px) {
   .movie-grid {
     grid-template-columns: repeat(3, 1fr);
@@ -108,20 +106,26 @@ body {
   }
 }
 
-/* 영화 카드 */
 .movie-card {
   display: flex;
   flex-direction: column;
   background-color: #ffffff;
-  border-radius: 12px;
+  border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease;
+}
+
+.movie-card:hover {
+  transform: translateY(-4px);
 }
 
 .poster-container {
   position: relative;
   width: 100%;
   aspect-ratio: 2 / 3;
+  overflow: hidden;
+  background-color: #e2e8f0;
 }
 
 .poster-img {
@@ -130,45 +134,50 @@ body {
   object-fit: cover;
 }
 
-.bookmark-button {
+.bookmark-btn {
   position: absolute;
   top: 10px;
   right: 10px;
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(0, 0, 0, 0.45);
   border: none;
-  border-radius: 6px;
+  border-radius: 50%; /* 동그란 모양 */
   width: 32px;
   height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  z-index: 10;
+  transition: background 0.2s;
 }
 
-.bookmark-button img {
-  width: 18px;
-  height: 18px;
+.bookmark-btn:hover {
+  background: rgba(0, 0, 0, 0.65);
+}
+
+.icon-img {
+  width: 16px;
+  height: 16px;
 }
 
 .movie-info {
-  padding: 12px 8px;
+  padding: 10px 8px;
 }
 
 .movie-title {
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 700;
   margin-bottom: 4px;
   white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis;
+  color: #1e293b;
 }
 
-.movie-release {
-  font-size: 13px;
+.release-date {
+  font-size: 12px;
   color: #64748b;
 }
 
-/* 페이지네이션 */
 .pagination {
   display: flex;
   justify-content: center;
@@ -186,6 +195,11 @@ body {
   cursor: pointer;
   font-size: 14px;
   font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.page-button:hover {
+  background-color: #f1f5f9;
 }
 
 .page-button.active {
@@ -193,4 +207,11 @@ body {
   color: #ffffff;
   border-color: #2563eb;
   font-weight: 700;
+}
+
+.empty-list {
+  text-align: center;
+  padding: 60px 0;
+  color: #64748b;
+  font-size: 16px;
 }
