@@ -1,0 +1,34 @@
+.site-header { height: 56px; flex: 0 0 56px; background: #fff; border-bottom: 1px solid #e9ebef; }
+.header-inner { height: 100%; max-width: 1152px; margin: 0 auto; display: flex; align-items: center; }
+.brand { display: inline-flex; align-items: center; gap: 7px; font-size: 17px; letter-spacing: -.5px; }
+.brand-mark { display: grid; place-items: center; width: 21px; height: 21px; border: 2px solid #262b31; border-radius: 5px; font-size: 12px; }
+.primary-nav { display: flex; align-items: center; gap: 24px; margin-left: 28px; height: 100%; color: #707780; font-size: 13px; }
+.primary-nav a { height: 100%; display: flex; align-items: center; position: relative; }
+.primary-nav a.active { color: #262b31; font-weight: 600; }
+.primary-nav a.active::after { content: ''; position: absolute; height: 2px; background: #2f6fed; left: 0; right: 0; bottom: 0; }
+.header-actions { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+.search-button { width: 34px; height: 34px; border: 1px solid #e7e9ed; border-radius: 6px; background: #fff; display: grid; place-items: center; }
+.search-button img { width: 16px; height: 16px; }
+.login-button { height: 34px; padding: 0 14px; border: 0; border-radius: 5px; color: #fff; background: #316fe8; font-size: 13px; font-weight: 600; }
+.page-content { width: min(1152px, calc(100% - 48px)); margin: 0 auto; padding-top: 24px; flex: 1; }
+.page-content h1 { margin: 0 0 12px; font-size: 23px; line-height: 1.4; letter-spacing: -.65px; font-weight: 700; }
+.movie-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); column-gap: 12px; row-gap: 24px; }
+.movie-card { min-width: 0; }
+.poster-wrap { position: relative; aspect-ratio: 1 / 1; overflow: hidden; border-radius: 8px; background: #e6e8ec; }
+.poster { display: block; width: 100%; height: 100%; object-fit: cover; }
+.bookmark-button { position: absolute; top: 8px; right: 8px; width: 32px; height: 32px; display: grid; place-items: center; border: 1px solid rgba(255,255,255,.72); border-radius: 5px; background: rgba(24,29,35,.62); backdrop-filter: blur(4px); transition: background .15s ease, transform .15s ease; }
+.bookmark-button:hover { transform: translateY(-1px); }
+.bookmark-button img { width: 18px; height: 18px; }
+.bookmark-button.is-bookmarked { background: #316fe8; border-color: #316fe8; }
+.movie-title { margin: 7px 0 1px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; color: #20242a; font-size: 13px; line-height: 1.45; font-weight: 600; }
+.release-date { color: #9aa1aa; font-size: 11px; line-height: 1.5; }
+.pagination { display: flex; justify-content: center; align-items: center; gap: 4px; padding: 28px 0 42px; }
+.pagination button { width: 30px; height: 30px; border: 0; border-radius: 5px; background: transparent; color: #777f89; font-size: 12px; }
+.pagination button.current { color: #fff; background: #316fe8; font-weight: 600; }
+.pagination .page-arrow { display: grid; place-items: center; }
+.pagination .page-arrow:disabled { opacity: .35; cursor: default; }
+.pagination .page-arrow img { width: 16px; height: 16px; }
+.site-footer { display: flex; align-items: center; justify-content: flex-end; gap: 6px; min-height: 34px; width: min(1152px, calc(100% - 48px)); margin: 0 auto; border-top: 1px solid #e8eaee; color: #9299a2; font-size: 9px; }
+.site-footer img { width: 42px; height: auto; }
+@media (min-width: 1400px) { .header-inner, .page-content, .site-footer { width: min(1152px, calc(100% - 48px)); } }
+@media (max-width: 760px) { .header-inner { padding: 0 18px; } .page-content { width: calc(100% - 36px); padding-top: 22px; } .movie-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px 12px; } .primary-nav { gap: 16px; margin-left: 18px; } .site-footer { width: calc(100% - 36px); justify-content: center; } }
