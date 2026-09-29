@@ -1,4 +1,5 @@
 import { Link, NavLink } from "react-router-dom";
+import { cn } from "../lib/cn";
 import Icon from "./icon";
 
 const navItems = [
@@ -24,7 +25,7 @@ function Header() {
               key={to}
               to={to}
               className={({ isActive }) =>
-                isActive ? "text-ink underline" : "text-gray-600"
+                cn("text-gray-600", isActive && "text-ink underline")
               }
             >
               {label}

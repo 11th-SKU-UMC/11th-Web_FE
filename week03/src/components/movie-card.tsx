@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import type { Movie } from "../types/movie";
+import { cn } from "../lib/cn";
 import Icon from "./icon";
 
 interface MovieCardProps {
@@ -27,11 +28,10 @@ function MovieCard({ movie, onToggleBookmark }: MovieCardProps) {
             aria-label={`${title} 즐겨찾기`}
             aria-pressed={isBookmarked}
             onClick={() => onToggleBookmark(id)}
-            className={`absolute top-2.5 right-2.5 flex size-[34px] items-center justify-center rounded-lg border text-white ${
-              isBookmarked
-                ? "border-primary bg-primary"
-                : "border-white bg-ink"
-            }`}
+            className={cn(
+              "absolute top-2.5 right-2.5 flex size-[34px] items-center justify-center rounded-lg border border-white bg-ink text-white",
+              isBookmarked && "border-primary bg-primary",
+            )}
           >
             <Icon name={isBookmarked ? "bookmark" : "bookmark-outline"} />
           </button>

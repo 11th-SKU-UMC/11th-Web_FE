@@ -11,12 +11,3 @@ export interface Movie {
   overview: string;
   isBookmarked: boolean;
 }
-
-export interface MovieSearchResult {
-  id: number;
-  title: string;
-  originalTitle: string;
-  releaseDate: string;
-  overview: string;
-  posterPath: string | null;
-}

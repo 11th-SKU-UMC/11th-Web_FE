@@ -3,6 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import type { Movie } from "../types/movie";
 import Footer from "../components/footer";
 import Icon from "../components/icon";
+import { cn } from "../lib/cn";
 
 interface MovieDetailPageProps {
   movies: Movie[];
@@ -12,8 +13,8 @@ interface MovieDetailPageProps {
 const RATINGS = [1, 2, 3, 4, 5];
 
 function MovieDetailPage({ movies, onToggleBookmark }: MovieDetailPageProps) {
-  const { id } = useParams();
-  const movie = movies.find((m) => m.id === Number(id));
+  const { movieId } = useParams();
+  const movie = movies.find((m) => m.id === Number(movieId));
 
   const [rating, setRating] = useState(0);
   const [review, setReview] = useState("");
@@ -104,9 +105,10 @@ function MovieDetailPage({ movies, onToggleBookmark }: MovieDetailPageProps) {
                 aria-checked={rating === value}
                 aria-label={`${value}점`}
                 onClick={() => setRating(value)}
-                className={`flex size-[38px] items-center justify-center rounded-lg border border-gray-200 bg-white ${
-                  value <= rating ? "text-primary" : "text-gray-600"
-                }`}
+                className={cn(
+                  "flex size-[38px] items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-600",
+                  value <= rating && "text-primary",
+                )}
               >
                 <Icon name={value <= rating ? "star" : "star-outline"} />
               </button>

@@ -1,3 +1,4 @@
+import { cn } from "../lib/cn";
 import Icon from "./icon";
 
 interface PaginationProps {
@@ -19,7 +20,7 @@ function Pagination({ currentPage, totalPages }: PaginationProps) {
         type="button"
         aria-label="이전 페이지"
         disabled={!hasPrev}
-        className={hasPrev ? "text-gray-600" : "text-primary-soft"}
+        className={cn("text-gray-600", !hasPrev && "text-primary-soft")}
       >
         <Icon name="chevron-left" />
       </button>
@@ -30,9 +31,10 @@ function Pagination({ currentPage, totalPages }: PaginationProps) {
             key={page}
             type="button"
             aria-current={page === currentPage ? "page" : undefined}
-            className={`flex size-9 items-center justify-center rounded-[7px] text-[13px] font-bold ${
-              page === currentPage ? "bg-ink text-white" : "text-gray-600"
-            }`}
+            className={cn(
+              "flex size-9 items-center justify-center rounded-[7px] text-[13px] font-bold text-gray-600",
+              page === currentPage && "bg-ink text-white",
+            )}
           >
             {page}
           </button>
@@ -43,7 +45,7 @@ function Pagination({ currentPage, totalPages }: PaginationProps) {
         type="button"
         aria-label="다음 페이지"
         disabled={!hasNext}
-        className={hasNext ? "text-gray-600" : "text-primary-soft"}
+        className={cn("text-gray-600", !hasNext && "text-primary-soft")}
       >
         <Icon name="chevron-right" />
       </button>

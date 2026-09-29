@@ -14,18 +14,3 @@
   --color-primary-soft: #d9e5ff;
   --color-danger: #d92d20;
 }
-
-body {
-  background: var(--color-surface);
-  color: var(--color-ink);
-  font-family: var(--font-sans);
-}
-
-/* 검정 단색 SVG 아이콘을 currentColor 로 칠하기 위한 마스크 */
-.icon {
-  display: inline-block;
-  flex: none;
-  background-color: currentColor;
-  mask: var(--icon) center / contain no-repeat;
-  -webkit-mask: var(--icon) center / contain no-repeat;
-}

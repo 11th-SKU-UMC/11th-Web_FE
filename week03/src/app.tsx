@@ -5,7 +5,6 @@ import Header from "./components/header";
 import MovieListPage from "./pages/movie-list-page";
 import MovieDetailPage from "./pages/movie-detail-page";
 import MovieSearchPage from "./pages/movie-search-page";
-import MovieSearchResultPage from "./pages/movie-search-result-page";
 import LoginPage from "./pages/login-page";
 import SignupPage from "./pages/signup-page";
 import MyPage from "./pages/my-page";
@@ -26,7 +25,7 @@ function App() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col">
+    <div className="flex min-h-screen flex-col bg-surface font-sans text-ink">
       <Header />
       <Routes>
         <Route
@@ -36,13 +35,12 @@ function App() {
           }
         />
         <Route
-          path="/movies/:id"
+          path="/movies/:movieId"
           element={
             <MovieDetailPage movies={movies} onToggleBookmark={toggleBookmark} />
           }
         />
-        <Route path="/search" element={<MovieSearchPage />} />
-        <Route path="/search/results" element={<MovieSearchResultPage />} />
+        <Route path="/search" element={<MovieSearchPage movies={movies} />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
         <Route path="/my" element={<MyPage movies={movies} />} />
