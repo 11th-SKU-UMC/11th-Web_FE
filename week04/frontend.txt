@@ -1,0 +1,57 @@
+### 필수 미션
+
+#### 1. Zustand를 이용한 북마크 상태 공유
+
+기존에 컴포넌트에서 관리하던 북마크 상태를 Zustand store로 분리하여 목록, 검색, 상세 화면에서 동일한 상태를 사용할 수 있도록 구현하였다.
+
+```tsx
+interface BookmarkStore {
+  bookmarkedMovieIds: number[];
+  toggleBookmark: (movieId: number) => void;
+}
+
+export const useBookmarkStore = create<BookmarkStore>()(
+  persist(
+    (set) => ({
+      bookmarkedMovieIds: [],
+      toggleBookmark: (movieId) =>
+        set((state) => ({
+          bookmarkedMovieIds: state.bookmarkedMovieIds.includes(movieId)
+            ? state.bookmarkedMovieIds.filter((id) => id !== movieId)
+            : [...state.bookmarkedMovieIds, movieId],
+        })),
+    }),
+    {
+      name: "umcine-bookmark-store",
+      storage: createJSONStorage(() => localStorage),
+      partialize: (state) => ({
+        bookmarkedMovieIds: state.bookmarkedMovieIds,
+      }),
+    }
+  )
+);
+```
+
+각 화면에서는 `useBookmarkStore`를 통해 현재 북마크 상태와 `toggleBookmark`를 사용하도록 연결하였다.
+
+영화 A를 목록 화면에서 북마크한 후 상세 화면으로 이동했을 때에도 동일하게 북마크된 상태가 표시되는 것을 확인하였다. 또한 상세 화면에서 북마크를 해제한 뒤 목록 화면으로 돌아왔을 때도 해제된 상태가 동일하게 반영되는 것을 확인하였다.
+
+#### 2. Web Storage를 이용한 북마크 상태 유지
+
+Zustand의 `persist` middleware와 `createJSONStorage`를 사용하여 북마크 상태를 `localStorage`에 저장하도록 구현하였다.
+
+Chrome 개발자 도구의 **Application → Local Storage**에서 `umcine-bookmark-store` key가 생성되고 북마크한 영화 ID가 저장되는 것을 확인하였다.
+
+영화 여러 편을 북마크한 후 새로고침했을 때 기존 북마크 상태가 그대로 유지되었으며, 브라우저를 종료한 뒤 다시 실행했을 때도 북마크 상태가 복원되는 것을 확인하였다.
+
+또한 Application 패널에서 `umcine-bookmark-store`의 저장값을 삭제한 후 다시 확인했을 때 북마크가 초기 빈 상태로 돌아오는 것을 확인하였다.
+
+#### 3. 최종 확인
+
+* 목록 / 검색 / 상세 화면에서 동일한 Zustand 북마크 상태 사용 확인
+* 영화 북마크 추가 및 해제 정상 동작 확인
+* `umcine-bookmark-store`가 Local Storage에 저장되는 것 확인
+* 새로고침 후 북마크 상태 유지 확인
+* 브라우저 재실행 후 북마크 상태 복원 확인
+* 저장값 삭제 후 초기 상태로 돌아오는 것 확인
+* `pnpm build` 실행 후 빌드 오류가 없는 것을 확인
