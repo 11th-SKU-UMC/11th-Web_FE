@@ -3,10 +3,9 @@ import { MovieCard } from './movie-card'
 
 type MovieGridProps = {
   movies: Movie[]
-  onToggleBookmark: (movieId: number) => void
 }
 
-export function MovieGrid({ movies, onToggleBookmark }: MovieGridProps) {
+export function MovieGrid({ movies }: MovieGridProps) {
   if (movies.length === 0) {
     return <p className="my-12 text-center text-[#969da8]">표시할 영화가 없어요.</p>
   }
@@ -20,7 +19,6 @@ export function MovieGrid({ movies, onToggleBookmark }: MovieGridProps) {
         <MovieCard
           key={movie.id}
           movie={movie}
-          onToggleBookmark={onToggleBookmark}
         />
       ))}
     </section>
