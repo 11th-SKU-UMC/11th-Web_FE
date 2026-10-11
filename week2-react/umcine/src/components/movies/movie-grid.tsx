@@ -1,13 +1,14 @@
-import type { Movie } from '../../types/movie'
+import type { TmdbMovieListItem } from '../../api/movies/models'
+import { toMovieCard } from '../../utils/movies/to-movie-card'
 import { MovieCard } from './movie-card'
 
 type MovieGridProps = {
-  movies: Movie[]
+  movies: TmdbMovieListItem[]
 }
 
 export function MovieGrid({ movies }: MovieGridProps) {
   if (movies.length === 0) {
-    return <p className="my-12 text-center text-[#969da8]">표시할 영화가 없어요.</p>
+    return <p className="my-12 text-center text-[#969da8]">조건에 맞는 영화가 없어요.</p>
   }
 
   return (
@@ -18,7 +19,7 @@ export function MovieGrid({ movies }: MovieGridProps) {
       {movies.map((movie) => (
         <MovieCard
           key={movie.id}
-          movie={movie}
+          movie={toMovieCard(movie)}
         />
       ))}
     </section>

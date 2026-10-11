@@ -1,9 +1,9 @@
 import { Link } from '@tanstack/react-router'
 import { BookmarkButton } from '../bookmark-button'
-import type { Movie } from '../../types/movie'
+import type { MovieCardView } from '../../utils/movies/to-movie-card'
 
 type MovieCardProps = {
-  movie: Movie
+  movie: MovieCardView
 }
 
 export function MovieCard({ movie }: MovieCardProps) {
@@ -15,11 +15,17 @@ export function MovieCard({ movie }: MovieCardProps) {
           to="/movies/$movieId"
           params={{ movieId: String(movie.id) }}
         >
-          <img
-            className="block h-full w-full object-cover transition-transform duration-[240ms] group-hover:scale-[1.025]"
-            src={movie.posterPath}
-            alt={`${movie.title} 포스터`}
-          />
+          {movie.posterUrl ? (
+            <img
+              className="block h-full w-full object-cover transition-transform duration-[240ms] group-hover:scale-[1.025]"
+              src={movie.posterUrl}
+              alt={`${movie.title} 포스터`}
+            />
+          ) : (
+            <span className="grid h-full w-full place-items-center bg-[#30343c] text-sm text-[#c3c8d0]">
+              이미지 없음
+            </span>
+          )}
         </Link>
         <BookmarkButton
           movieId={movie.id}
@@ -36,9 +42,9 @@ export function MovieCard({ movie }: MovieCardProps) {
       </Link>
       <time
         className="block text-xs leading-[17px] font-medium text-[#969da8]"
-        dateTime={movie.releaseDate.replaceAll('.', '-')}
+        dateTime={movie.releaseDate || undefined}
       >
-        {movie.releaseDate}
+        {movie.releaseDate || '개봉일 미정'}
       </time>
     </article>
   )
