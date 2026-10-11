@@ -1,4 +1,20 @@
-# 모든 하위 폴더의 node_modules 및 빌드 결과물 제외
+# 의존성 패키지 (Git에 올리면 안 됨)
 **/node_modules
+node_modules/
+
+# 빌드 결과물 (Git에 올리면 안 됨)
 **/dist
+dist/
+
+# 환경 변수 및 비밀 키 파일 (TMDB 토큰 등이 포함되므로 절대 올리면 안 됨!)
+.env
+.env.local
+.env.*.local
+*.env
+
+# 시스템 / 에디터 설정 파일
 .DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/extensions.json
+.idea
