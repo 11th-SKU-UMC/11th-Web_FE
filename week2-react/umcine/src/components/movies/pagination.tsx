@@ -15,7 +15,12 @@ export function Pagination({
     return null
   }
 
-  const pages = Array.from({ length: totalPages }, (_, index) => index + 1)
+  const firstVisiblePage = Math.max(1, Math.min(currentPage - 2, totalPages - 4))
+  const lastVisiblePage = Math.min(totalPages, firstVisiblePage + 4)
+  const pages = Array.from(
+    { length: lastVisiblePage - firstVisiblePage + 1 },
+    (_, index) => firstVisiblePage + index,
+  )
   const buttonClassName =
     'grid size-9 cursor-pointer place-items-center rounded-lg border border-[#2a2d33] bg-[#111318] p-1.5 text-sm font-semibold text-[#969da8] transition-colors hover:border-[#4f83ff] hover:text-white disabled:cursor-not-allowed disabled:opacity-40'
 
@@ -38,6 +43,15 @@ export function Pagination({
         />
       </button>
 
+      {firstVisiblePage > 1 && (
+        <>
+          <button className={buttonClassName} type="button" onClick={() => onPageChange(1)}>
+            1
+          </button>
+          {firstVisiblePage > 2 && <span className="self-center text-[#969da8]">…</span>}
+        </>
+      )}
+
       {pages.map((page) => (
         <button
           className={cn(
@@ -54,6 +68,15 @@ export function Pagination({
           {page}
         </button>
       ))}
+
+      {lastVisiblePage < totalPages && (
+        <>
+          {lastVisiblePage < totalPages - 1 && <span className="self-center text-[#969da8]">…</span>}
+          <button className={buttonClassName} type="button" onClick={() => onPageChange(totalPages)}>
+            {totalPages}
+          </button>
+        </>
+      )}
 
       <button
         className={buttonClassName}
