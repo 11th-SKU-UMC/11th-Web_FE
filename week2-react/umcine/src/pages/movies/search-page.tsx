@@ -1,24 +1,34 @@
 import { Link, useNavigate, useSearch } from "@tanstack/react-router";
 import { useEffect, useState, type SubmitEvent } from "react";
+import { BookmarkButton } from "../../components/bookmark-button";
+import { MovieSortControl } from "../../components/movies/movie-sort-control";
 import { movies } from "../../data/movies";
+import { useMoviePreferenceStore } from "../../stores/movie-preference-store";
 
 export function SearchPage() {
   const { query } = useSearch({ from: "/search" });
   const navigate = useNavigate({ from: "/search" });
   const [searchText, setSearchText] = useState(query ?? "");
+  const sortOrder = useMoviePreferenceStore((state) => state.sortOrder);
 
   useEffect(() => {
     setSearchText(query ?? "");
   }, [query]);
 
   const normalizedQuery = query?.trim().toLowerCase() ?? "";
-  const searchResults = normalizedQuery
+  const matchingMovies = normalizedQuery
     ? movies.filter(
         (movie) =>
           movie.title.toLowerCase().includes(normalizedQuery) ||
           movie.originalTitle.toLowerCase().includes(normalizedQuery),
       )
     : [];
+  const searchResults =
+    sortOrder === "title"
+      ? [...matchingMovies].sort((first, second) =>
+          first.title.localeCompare(second.title, "ko"),
+        )
+      : matchingMovies;
 
   function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -82,51 +92,60 @@ export function SearchPage() {
               검색 결과가 없어요.
             </p>
           ) : (
-            <ul className="grid list-none gap-4 p-0 md:grid-cols-2">
-              {searchResults.map((movie) => (
-                <li
-                  className="grid gap-4 rounded-xl border border-white/10 bg-[#111318] p-4 sm:grid-cols-[120px_minmax(0,1fr)]"
-                  key={movie.id}
-                >
-                  <Link
-                    className="block overflow-hidden rounded-lg"
-                    to="/movies/$movieId"
-                    params={{ movieId: String(movie.id) }}
+            <>
+              <MovieSortControl />
+              <ul className="grid list-none gap-4 p-0 md:grid-cols-2">
+                {searchResults.map((movie) => (
+                  <li
+                    className="grid gap-4 rounded-xl border border-white/10 bg-[#111318] p-4 sm:grid-cols-[120px_minmax(0,1fr)]"
+                    key={movie.id}
                   >
-                    <img
-                      className="aspect-[2/3] h-full w-full object-cover transition-transform hover:scale-[1.025]"
-                      src={movie.posterPath}
-                      alt={`${movie.title} 포스터`}
-                    />
-                  </Link>
-                  <div className="min-w-0">
                     <Link
-                      className="text-lg font-bold text-white no-underline hover:text-blue-400"
+                      className="block overflow-hidden rounded-lg"
                       to="/movies/$movieId"
                       params={{ movieId: String(movie.id) }}
                     >
-                      <h3>{movie.title}</h3>
+                      <img
+                        className="aspect-[2/3] h-full w-full object-cover transition-transform hover:scale-[1.025]"
+                        src={movie.posterPath}
+                        alt={`${movie.title} 포스터`}
+                      />
                     </Link>
-                    <p className="mt-1 truncate text-sm text-[#969da8]">
-                      {movie.originalTitle}
-                    </p>
-                    <p className="mt-1 text-xs font-medium text-[#777f8c]">
-                      {movie.releaseDate}
-                    </p>
-                    <p className="mt-4 line-clamp-3 text-sm leading-6 text-[#c3c8d0]">
-                      {movie.overview}
-                    </p>
-                    <Link
-                      className="mt-4 inline-flex text-sm font-bold text-[#7ba3ff] no-underline hover:text-white"
-                      to="/movies/$movieId"
-                      params={{ movieId: String(movie.id) }}
-                    >
-                      상세 보기 →
-                    </Link>
-                  </div>
-                </li>
-              ))}
-            </ul>
+                    <div className="min-w-0">
+                      <Link
+                        className="text-lg font-bold text-white no-underline hover:text-blue-400"
+                        to="/movies/$movieId"
+                        params={{ movieId: String(movie.id) }}
+                      >
+                        <h3>{movie.title}</h3>
+                      </Link>
+                      <p className="mt-1 truncate text-sm text-[#969da8]">
+                        {movie.originalTitle}
+                      </p>
+                      <p className="mt-1 text-xs font-medium text-[#777f8c]">
+                        {movie.releaseDate}
+                      </p>
+                      <p className="mt-4 line-clamp-3 text-sm leading-6 text-[#c3c8d0]">
+                        {movie.overview}
+                      </p>
+                      <Link
+                        className="mt-4 inline-flex text-sm font-bold text-[#7ba3ff] no-underline hover:text-white"
+                        to="/movies/$movieId"
+                        params={{ movieId: String(movie.id) }}
+                      >
+                        상세 보기 →
+                      </Link>
+                      <div className="mt-4">
+                        <BookmarkButton
+                          movieId={movie.id}
+                          movieTitle={movie.title}
+                        />
+                      </div>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </>
           )}
         </>
       )}
