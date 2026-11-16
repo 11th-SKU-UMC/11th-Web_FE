@@ -2,6 +2,7 @@ import { Link, useParams } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { movieDetailQueryOptions } from "../../api/movies/movie-query-options";
 import { BookmarkButton } from "../../components/bookmark-button";
+import { MovieRating } from "../../components/movies/movie-rating";
 import { getMovieDetailErrorMessage } from "../../utils/movies/get-movie-detail-error-message";
 import {
   getTmdbBackdropUrl,
@@ -125,6 +126,7 @@ export function MovieDetailPage() {
           <p className="max-w-[600px] text-base leading-7 text-[#c3c8d0]">
             {movie.overview || "줄거리 정보가 없어요."}
           </p>
+          <MovieRating movieId={movie.id} />
         </div>
       </section>
     </main>
