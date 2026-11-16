@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { useState, type SubmitEvent } from "react";
 import { checkEmailDuplicate } from "../../api/members/check-email-duplicate";
 import { checkNicknameDuplicate } from "../../api/members/check-nickname-duplicate";
-import { signup } from "../../api/members/signup";
+import { useSignupMutation } from "../../hooks/use-signup-mutation";
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PASSWORD_REGEX =
@@ -31,7 +31,7 @@ export function SignupPage() {
     email: { ...DEFAULT_DUPLICATE_CHECK },
     nickname: { ...DEFAULT_DUPLICATE_CHECK },
   });
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const signupMutation = useSignupMutation();
 
   const isEmailValid = EMAIL_REGEX.test(form.email.trim());
   const nicknameLength = form.nickname.trim().length;
@@ -95,24 +95,15 @@ export function SignupPage() {
     }
   };
 
-  const handleSubmit = async (event: SubmitEvent<HTMLFormElement>) => {
+  const handleSubmit = (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (!canSubmit || isSubmitting) return;
+    if (!canSubmit || signupMutation.isPending) return;
 
-    setIsSubmitting(true);
-    try {
-      const response = await signup({
-        email: form.email.trim(),
-        nickname: form.nickname.trim(),
-        password: form.password,
-      });
-      alert(response.message);
-      // 로그인 페이지 연결 후 이동을 추가해요.
-    } catch {
-      alert("회원가입에 실패했어요. 다시 시도해 주세요.");
-    } finally {
-      setIsSubmitting(false);
-    }
+    signupMutation.mutate({
+      email: form.email.trim(),
+      nickname: form.nickname.trim(),
+      password: form.password,
+    });
   };
 
   return (
@@ -246,9 +237,9 @@ export function SignupPage() {
         <button
           className="mt-2 cursor-pointer rounded-md bg-[#4169e1] px-4 py-3.5 font-bold text-white transition-colors hover:bg-[#3159d4] disabled:cursor-not-allowed disabled:bg-[#b8c7f2]"
           type="submit"
-          disabled={!canSubmit || isSubmitting}
+          disabled={!canSubmit || signupMutation.isPending}
         >
-          {isSubmitting ? "가입 중" : "가입하기"}
+          {signupMutation.isPending ? "가입 중" : "가입하기"}
         </button>
       </form>
       <p className="mt-4 text-center text-sm text-[#777f8c]">
