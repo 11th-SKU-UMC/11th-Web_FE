@@ -1,4 +1,6 @@
-import { Link } from "@tanstack/react-router";
+"use client";
+
+import Link from "next/link";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState, type SubmitEvent } from "react";
 import { memberRatingsQueryOptions } from "../../api/ratings/rating-query-options";
@@ -18,7 +20,7 @@ export function MovieRating({ movieId }: { movieId: number }) {
     <section className="mt-8 rounded-xl border border-white/15 bg-black/40 p-5" aria-label="내 평점">
       <h2 className="mb-4 text-lg font-bold text-white">내 평점</h2>
       {!accessToken ? (
-        <Link className="text-sm text-blue-300 underline" to="/login">로그인하고 평점을 남겨 보세요.</Link>
+        <Link className="text-sm text-blue-300 underline" href="/login">로그인하고 평점을 남겨 보세요.</Link>
       ) : meQuery.isLoading || ratingsQuery.isLoading ? (
         <p className="text-sm text-[#c3c8d0]" role="status">내 평점을 불러오는 중이에요.</p>
       ) : meQuery.isError || ratingsQuery.isError || !memberId ? (
