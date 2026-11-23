@@ -1,12 +1,10 @@
 import assert from "node:assert/strict";
-import { createServer } from "vite";
 import { QueryClient, QueryObserver } from "@tanstack/react-query";
-import { createMemoryHistory, createRouter, isRedirect } from "@tanstack/react-router";
 
 // 실제 서버·계정 대신 같은 요청/응답 계약을 사용하는 메모리 서버로 검증해요.
-process.env.VITE_API_BASE_URL = "http://localhost:8080";
-process.env.VITE_TMDB_API_BASE_URL = "https://api.themoviedb.org/3";
-process.env.VITE_TMDB_ACCESS_TOKEN = "test";
+process.env.NEXT_PUBLIC_API_BASE_URL = "http://localhost:8080";
+process.env.NEXT_PUBLIC_TMDB_API_BASE_URL = "https://api.themoviedb.org/3";
+process.env.NEXT_PUBLIC_TMDB_ACCESS_TOKEN = "test";
 const storage = new Map();
 globalThis.localStorage = {
   getItem: (key) => storage.get(key) ?? null,
@@ -66,27 +64,28 @@ globalThis.fetch = async (input) => {
   return Response.json({ isSuccess: true, code: "COMMON200", message: "성공", result });
 };
 
-const server = await createServer({ configFile: false, server: { middlewareMode: true, hmr: false, ws: false, watch: null } });
+const loadModule = (path) => import(new URL(`..${path}`, import.meta.url));
 const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
 const unsubscribe = [];
 const count = (method, path) => requests.filter((item) => item.method === method && item.path === path).length;
 try {
-  const { useAuthStore } = await server.ssrLoadModule("/src/stores/auth-store.ts");
-  const { Route: authRoute } = await server.ssrLoadModule("/src/routes/(protected)/_authenticated.tsx");
-  assert.throws(() => authRoute.options.beforeLoad(), (error) => isRedirect(error) && error.options.to === "/login");
-  const { routeTree } = await server.ssrLoadModule("/src/routeTree.gen.ts");
-  const router = createRouter({ routeTree, history: createMemoryHistory(), isServer: true });
-  for (const path of ["/mypage", "/mypage/edit"]) {
-    assert.ok(router.matchRoutes(path).some((match) => match.routeId === "/(protected)/_authenticated"));
-  }
-  const { loginMutationOptions, signupMutationOptions } = await server.ssrLoadModule("/src/api/auth/auth-mutation-options.ts");
-  const { favoritesQueryOptions, favoriteStatusQueryOptions, favoriteKeys } = await server.ssrLoadModule("/src/api/favorites/favorite-query-options.ts");
-  const { favoriteMutationOptions } = await server.ssrLoadModule("/src/api/favorites/favorite-mutation-options.ts");
-  const { memberRatingsQueryOptions, ratingKeys } = await server.ssrLoadModule("/src/api/ratings/rating-query-options.ts");
-  const { ratingMutationOptions } = await server.ssrLoadModule("/src/api/ratings/rating-mutation-options.ts");
+  const { useAuthStore } = await loadModule("/src/stores/auth-store.ts");
+  // 자동 복원을 막아 서버 HTML과 첫 클라이언트 렌더링을 동일하게 유지해요.
+  storage.set("umcine-auth-store", JSON.stringify({ state: { accessToken: "restored-token" }, version: 0 }));
+  assert.equal(useAuthStore.getState().accessToken, null);
+  assert.equal(useAuthStore.persist.hasHydrated(), false);
+  await useAuthStore.persist.rehydrate();
+  assert.equal(useAuthStore.getState().accessToken, "restored-token");
+  const { parsePage } = await loadModule("/src/utils/movies/parse-page.ts");
+  for (const invalid of [null, "", "0", "-1", "1.5", "501", "NaN"]) assert.equal(parsePage(invalid), 1);
+  assert.equal(parsePage("500"), 500);
+  const { loginMutationOptions, signupMutationOptions } = await loadModule("/src/api/auth/auth-mutation-options.ts");
+  const { favoritesQueryOptions, favoriteStatusQueryOptions, favoriteKeys } = await loadModule("/src/api/favorites/favorite-query-options.ts");
+  const { favoriteMutationOptions } = await loadModule("/src/api/favorites/favorite-mutation-options.ts");
+  const { memberRatingsQueryOptions, ratingKeys } = await loadModule("/src/api/ratings/rating-query-options.ts");
+  const { ratingMutationOptions } = await loadModule("/src/api/ratings/rating-mutation-options.ts");
   const execute = (options, body) => client.getMutationCache().build(client, options).execute(body);
   useAuthStore.getState().setAccessToken("test-token");
-  assert.doesNotThrow(() => authRoute.options.beforeLoad());
   assert.equal(JSON.parse(storage.get("umcine-auth-store")).state.accessToken, "test-token");
   await execute(loginMutationOptions(), { email: "test@example.com", password: "Password1!" });
   assert.equal(requests.at(-1).auth, null);
@@ -133,9 +132,8 @@ try {
   assert.equal(count("GET", "/favorites/99"), before401 + 1);
   assert.equal(useAuthStore.getState().accessToken, null);
   assert.equal(JSON.parse(storage.get("umcine-auth-store")).state.accessToken, null);
-  console.log("PASS: 보호 라우트·주소 유지, 인증 헤더·토큰 저장/401, 즐겨찾기 CRUD, 회원별 캐시, setQueryData 추가 GET 없음, invalidateQueries 재조회, 평점 페이지/CRUD, 실패 처리");
+  console.log("PASS: 저장소 지연 복원·페이지 검증, 인증 헤더·토큰 저장/401, 즐겨찾기 CRUD, 회원별 캐시, setQueryData 추가 GET 없음, invalidateQueries 재조회, 평점 페이지/CRUD, 실패 처리");
 } finally {
   unsubscribe.forEach((stop) => stop());
   client.clear();
-  await server.close();
 }

@@ -1,5 +1,7 @@
+"use client";
+
 import { useIsMutating, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useNavigate } from "@tanstack/react-router";
+import { useRouter } from "next/navigation";
 import { favoritesQueryOptions, favoriteStatusQueryOptions } from "../api/favorites/favorite-query-options";
 import { favoriteMutationKey, favoriteMutationOptions } from "../api/favorites/favorite-mutation-options";
 import { useMeQuery } from "../hooks/use-me-query";
@@ -21,7 +23,7 @@ export function BookmarkButton({
   const meQuery = useMeQuery();
   const memberId = accessToken ? meQuery.data?.memberId : undefined;
   const queryClient = useQueryClient();
-  const navigate = useNavigate();
+  const router = useRouter();
   // 영화 목록의 아이콘들은 즐겨찾기 목록 요청 하나를 공유해요.
   const listQuery = useQuery(favoritesQueryOptions(variant === "icon" ? memberId : undefined));
   const statusQuery = useQuery(favoriteStatusQueryOptions(variant === "text" ? memberId : undefined, movieId));
@@ -53,7 +55,7 @@ export function BookmarkButton({
       aria-pressed={isBookmarked}
       onClick={() => {
         if (!accessToken) {
-          navigate({ to: "/login" });
+          router.push("/login");
           return;
         }
         if (isError) {

@@ -1,5 +1,6 @@
 import { create } from "zustand";
-import { createJSONStorage, persist } from "zustand/middleware";
+import { persist } from "zustand/middleware";
+import { browserStorage } from "./browser-storage";
 
 export type MovieSortOrder = "default" | "title";
 
@@ -16,7 +17,8 @@ export const useMoviePreferenceStore = create<MoviePreferenceStore>()(
     }),
     {
       name: "umcine-movie-preferences",
-      storage: createJSONStorage(() => localStorage),
+      storage: browserStorage,
+      skipHydration: true,
       partialize: (state) => ({ sortOrder: state.sortOrder }),
     },
   ),

@@ -1,5 +1,6 @@
 import { create } from "zustand";
-import { createJSONStorage, persist } from "zustand/middleware";
+import { persist } from "zustand/middleware";
+import { browserStorage } from "./browser-storage";
 
 interface BookmarkStore {
   bookmarkedMovieIds: number[];
@@ -19,7 +20,8 @@ export const useBookmarkStore = create<BookmarkStore>()(
     }),
     {
       name: "umcine-bookmark-store",
-      storage: createJSONStorage(() => localStorage),
+      storage: browserStorage,
+      skipHydration: true,
       partialize: (state) => ({
         bookmarkedMovieIds: state.bookmarkedMovieIds,
       }),

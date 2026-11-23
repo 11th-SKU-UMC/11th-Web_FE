@@ -1,3 +1,5 @@
+"use client";
+
 import { useMoviePreferenceStore } from "../../stores/movie-preference-store";
 
 export function MovieSortControl() {

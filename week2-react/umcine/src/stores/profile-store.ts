@@ -1,5 +1,6 @@
 import { create } from "zustand";
-import { createJSONStorage, persist } from "zustand/middleware";
+import { persist } from "zustand/middleware";
+import { browserStorage } from "./browser-storage";
 
 interface ProfileStore {
   email: string;
@@ -18,7 +19,8 @@ export const useProfileStore = create<ProfileStore>()(
     }),
     {
       name: "umcine-profile-preview",
-      storage: createJSONStorage(() => localStorage),
+      storage: browserStorage,
+      skipHydration: true,
       partialize: (state) => ({ email: state.email, nickname: state.nickname }),
     },
   ),
