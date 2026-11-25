@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { getMovieDetail } from "../api/movies";
 import { getErrorMessage, isNotFoundError } from "../api/tmdb";
 import Footer from "../components/footer";
@@ -8,26 +8,75 @@ import Icon from "../components/icon";
 import MovieImage from "../components/movie-image";
 import StatusMessage, { StatusButton } from "../components/status-message";
 import { cn } from "../lib/cn";
-import { useBookmarkStore } from "../stores/bookmark-store";
+import { useAuthStore } from "../stores/auth-store";
+import { useFavoriteStatusQuery, useToggleFavoriteMutation } from "../hooks/use-favorites";
+import {
+  useCreateRatingMutation,
+  useDeleteRatingMutation,
+  useMemberRatingsQuery,
+  useUpdateRatingMutation,
+} from "../hooks/use-ratings";
+import { getMemberIdFromAccessToken } from "../lib/jwt";
 
 const RATINGS = [1, 2, 3, 4, 5];
 
 function MovieDetailPage() {
   const { movieId } = useParams();
   const id = Number(movieId);
+  const navigate = useNavigate();
+  const accessToken = useAuthStore((state) => state.accessToken);
+  const memberId = getMemberIdFromAccessToken(accessToken);
   const detail = useQuery({
     queryKey: ["movies", "detail", id],
     queryFn: ({ signal }) => getMovieDetail(id, signal),
     enabled: Number.isInteger(id) && id > 0,
     staleTime: 30 * 1000,
   });
-  const toggleBookmark = useBookmarkStore((state) => state.toggleBookmark);
-  const isBookmarked = useBookmarkStore((state) =>
-    state.bookmarkedMovieIds.includes(id),
-  );
+  const favoriteStatusQuery = useFavoriteStatusQuery(id);
+  const toggleFavoriteMutation = useToggleFavoriteMutation(id);
+  const ratingsQuery = useMemberRatingsQuery(memberId, Boolean(accessToken));
+  const createRatingMutation = useCreateRatingMutation(memberId);
+  const updateRatingMutation = useUpdateRatingMutation(memberId);
+  const deleteRatingMutation = useDeleteRatingMutation(memberId);
+  const myRating = ratingsQuery.data?.find((ratingItem) => ratingItem.movieId === id);
 
   const [rating, setRating] = useState(0);
   const [review, setReview] = useState("");
+  const isFavorite = favoriteStatusQuery.data ?? false;
+  const isRatingMutationPending =
+    createRatingMutation.isPending ||
+    updateRatingMutation.isPending ||
+    deleteRatingMutation.isPending;
+
+  useEffect(() => {
+    setRating(myRating?.score ?? 0);
+    setReview(myRating?.comment ?? "");
+  }, [id, myRating]);
+
+  const handleFavoriteClick = () => {
+    if (!accessToken) {
+      navigate("/login");
+      return;
+    }
+    if (!favoriteStatusQuery.isPending && !toggleFavoriteMutation.isPending) {
+      toggleFavoriteMutation.mutate(isFavorite);
+    }
+  };
+
+  const handleSaveRating = () => {
+    if (!accessToken) {
+      navigate("/login");
+      return;
+    }
+    if (rating < 1 || isRatingMutationPending) return;
+
+    const comment = review.trim();
+    if (myRating) {
+      updateRatingMutation.mutate({ ratingId: myRating.ratingId, score: rating, comment });
+    } else {
+      createRatingMutation.mutate({ movieId: id, score: rating, comment });
+    }
+  };
 
   if (detail.isPending) {
     return (
@@ -111,15 +160,16 @@ function MovieDetailPage() {
           </p>
           <button
             type="button"
-            aria-pressed={isBookmarked}
-            onClick={() => toggleBookmark(movie.id)}
+            aria-pressed={isFavorite}
+            disabled={Boolean(accessToken) && (favoriteStatusQuery.isPending || toggleFavoriteMutation.isPending)}
+            onClick={handleFavoriteClick}
             className="flex h-[42px] items-center gap-2 rounded-lg border border-white bg-primary px-4 text-sm font-extrabold text-white"
           >
             <Icon
-              name={isBookmarked ? "bookmark" : "bookmark-outline"}
+              name={isFavorite ? "bookmark" : "bookmark-outline"}
               size={16}
             />
-            즐겨찾기
+            {isFavorite ? "즐겨찾기 해제" : "즐겨찾기"}
           </button>
         </section>
 
@@ -130,6 +180,11 @@ function MovieDetailPage() {
           <p className="text-xs text-gray-400">
             별점은 필수, 후기는 선택이에요.
           </p>
+          {ratingsQuery.isError && (
+            <p role="alert" className="text-xs text-danger">
+              내 평점을 불러오지 못했어요.
+            </p>
+          )}
 
           <div className="flex gap-1" role="radiogroup" aria-label="영화 별점">
             {RATINGS.map((value) => (
@@ -161,10 +216,22 @@ function MovieDetailPage() {
           <button
             id="save-rating"
             type="button"
+            disabled={rating < 1 || isRatingMutationPending}
+            onClick={handleSaveRating}
             className="flex h-[42px] w-full items-center justify-center rounded-lg border border-white bg-ink text-sm font-extrabold text-white"
           >
-            평점 저장
+            {isRatingMutationPending ? "저장 중" : myRating ? "평점 수정" : "평점 저장"}
           </button>
+          {myRating && (
+            <button
+              type="button"
+              disabled={isRatingMutationPending}
+              onClick={() => deleteRatingMutation.mutate(myRating.ratingId)}
+              className="flex h-[42px] w-full items-center justify-center rounded-lg border border-gray-200 bg-white text-sm font-extrabold text-gray-600"
+            >
+              평점 삭제
+            </button>
+          )}
         </aside>
       </main>
       <Footer />

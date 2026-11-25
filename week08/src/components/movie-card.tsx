@@ -1,9 +1,10 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import type { Movie } from "../types/movie";
 import { cn } from "../lib/cn";
 import Icon from "./icon";
 import MovieImage from "./movie-image";
-import { useBookmarkStore } from "../stores/bookmark-store";
+import { useAuthStore } from "../stores/auth-store";
+import { useFavoritesQuery, useToggleFavoriteMutation } from "../hooks/use-favorites";
 
 interface MovieCardProps {
   movie: Movie;
@@ -12,10 +13,19 @@ interface MovieCardProps {
 
 function MovieCard({ movie, showBookmark = false }: MovieCardProps) {
   const { id, title, releaseDate, posterPath } = movie;
-  const toggleBookmark = useBookmarkStore((state) => state.toggleBookmark);
-  const isBookmarked = useBookmarkStore((state) =>
-    state.bookmarkedMovieIds.includes(id),
-  );
+  const navigate = useNavigate();
+  const accessToken = useAuthStore((state) => state.accessToken);
+  const favoritesQuery = useFavoritesQuery();
+  const toggleFavoriteMutation = useToggleFavoriteMutation(id);
+  const isBookmarked = favoritesQuery.data?.some((favorite) => favorite.movieId === id) ?? false;
+
+  const handleToggleFavorite = () => {
+    if (!accessToken) {
+      navigate("/login");
+      return;
+    }
+    toggleFavoriteMutation.mutate(isBookmarked);
+  };
 
   return (
     <article className="flex flex-col gap-1">
@@ -32,7 +42,8 @@ function MovieCard({ movie, showBookmark = false }: MovieCardProps) {
             type="button"
             aria-label={`${title} 즐겨찾기`}
             aria-pressed={isBookmarked}
-            onClick={() => toggleBookmark(id)}
+            disabled={toggleFavoriteMutation.isPending}
+            onClick={handleToggleFavorite}
             className={cn(
               "absolute top-2.5 right-2.5 flex size-[34px] items-center justify-center rounded-lg border border-white bg-ink text-white",
               isBookmarked && "border-primary bg-primary",

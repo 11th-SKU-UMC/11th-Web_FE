@@ -1,19 +1,16 @@
 import { Link } from "react-router-dom";
-import type { Movie } from "../types/movie";
 import Footer from "../components/footer";
 import Icon from "../components/icon";
 import MovieGrid from "../components/movie-grid";
 import Pagination from "../components/pagination";
-import { useBookmarkStore } from "../stores/bookmark-store";
-import { useQuery } from "@tanstack/react-query";
+import StatusMessage from "../components/status-message";
+import { useQueries, useQuery } from "@tanstack/react-query";
 import { getMe } from "../api/members/me";
 import { useAuthStore } from "../stores/auth-store";
+import { useFavoritesQuery } from "../hooks/use-favorites";
+import { getMovieDetail } from "../api/movies";
 
-interface MyPageProps {
-  movies: Movie[];
-}
-
-function MyPage({ movies }: MyPageProps) {
+function MyPage() {
   const accessToken = useAuthStore((state) => state.accessToken);
   const meQuery = useQuery({
     queryKey: ["members", "me"],
@@ -23,12 +20,20 @@ function MyPage({ movies }: MyPageProps) {
     retry: false,
   });
   const nickname = meQuery.data?.nickname ?? "내 정보 불러오는 중";
-  const bookmarkedMovieIds = useBookmarkStore(
-    (state) => state.bookmarkedMovieIds,
+  const favoritesQuery = useFavoritesQuery();
+  const favoriteMoviesQueries = useQueries({
+    queries: (favoritesQuery.data ?? []).map(({ movieId }) => ({
+      queryKey: ["movies", "detail", movieId],
+      queryFn: ({ signal }: { signal: AbortSignal }) =>
+        getMovieDetail(movieId, signal),
+      staleTime: 30 * 1000,
+    })),
+  });
+  const favoriteMovies = favoriteMoviesQueries.flatMap((query) =>
+    query.data ? [query.data] : [],
   );
-  const favorites = movies.filter((movie) =>
-    bookmarkedMovieIds.includes(movie.id),
-  );
+  const isLoadingFavorites =
+    favoritesQuery.isPending || favoriteMoviesQueries.some((query) => query.isPending);
 
   return (
     <>
@@ -66,12 +71,16 @@ function MyPage({ movies }: MyPageProps) {
 
         <section className="flex w-full flex-col gap-4">
           <h2 className="text-[17px] font-bold">내 즐겨찾기</h2>
-          {favorites.length === 0 ? (
+          {favoritesQuery.isError ? (
+            <StatusMessage title="즐겨찾기를 불러오지 못했어요." />
+          ) : isLoadingFavorites ? (
+            <StatusMessage title="즐겨찾기를 불러오는 중이에요..." />
+          ) : favoriteMovies.length === 0 ? (
             <p className="py-20 text-center text-sm text-gray-600">
               아직 즐겨찾기한 영화가 없어요.
             </p>
           ) : (
-            <MovieGrid movies={favorites} />
+            <MovieGrid movies={favoriteMovies} showBookmark />
           )}
           <Pagination currentPage={1} totalPages={1} />
         </section>

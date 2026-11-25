@@ -1,6 +1,6 @@
 import { Navigate, Route, Routes } from "react-router-dom";
-import { movies } from "./data/movies";
 import Header from "./components/header";
+import AuthLayout from "./components/auth-layout";
 import MovieListPage from "./pages/movie-list-page";
 import MovieDetailPage from "./pages/movie-detail-page";
 import MovieSearchPage from "./pages/movie-search-page";
@@ -25,8 +25,10 @@ function App() {
           element={accessToken ? <Navigate to="/" replace /> : <LoginPage />}
         />
         <Route path="/signup" element={<SignupPage />} />
-        <Route path="/my" element={<MyPage movies={movies} />} />
-        <Route path="/my/edit" element={<MyPageEdit />} />
+        <Route element={<AuthLayout />}>
+          <Route path="/my" element={<MyPage />} />
+          <Route path="/my/edit" element={<MyPageEdit />} />
+        </Route>
       </Routes>
     </div>
   );

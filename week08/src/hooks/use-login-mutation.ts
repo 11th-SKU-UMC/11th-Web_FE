@@ -13,6 +13,7 @@ export function useLoginMutation() {
     onSuccess: (response) => {
       setAccessToken(response.result.accessToken);
       alert("로그인에 성공했어요.");
+      queryClient.removeQueries({ queryKey: ["favorites"] });
       void queryClient.invalidateQueries({ queryKey: ["members", "me"] });
       navigate("/");
     },
